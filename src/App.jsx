@@ -1,30 +1,9 @@
 import { useRef, useState } from "react";
 import "./App.css";
 import AqiGauge from "./components/AqiGauge";
+import {calculateUS_AQI} from "./utils/aqi.js"
 
 
-function calculateUS_AQI_PM25(pm25) {
-  // Truncate to 1 decimal
-  const c = Math.floor(pm25 * 10) / 10;
-
-  const breakpoints = [
-    { cLow: 0.0, cHigh: 12.0, iLow: 0, iHigh: 50 },
-    { cLow: 12.1, cHigh: 35.4, iLow: 51, iHigh: 100 },
-    { cLow: 35.5, cHigh: 55.4, iLow: 101, iHigh: 150 },
-    { cLow: 55.5, cHigh: 150.4, iLow: 151, iHigh: 200 },
-    { cLow: 150.5, cHigh: 250.4, iLow: 201, iHigh: 300 },
-    { cLow: 250.5, cHigh: 500.4, iLow: 301, iHigh: 500 },
-  ];
-
-  for (const bp of breakpoints) {
-    if (c >= bp.cLow && c <= bp.cHigh) {
-      return Math.round(
-        ((bp.iHigh - bp.iLow) / (bp.cHigh - bp.cLow)) * (c - bp.cLow) + bp.iLow
-      );
-    }
-  }
-  return 500; // Beyond AQI
-}
 
 function App() {
   //importing api key and endpoints
@@ -103,8 +82,8 @@ function App() {
             const air = data.list[0];
             setAirPollutionData(air);
 
-            const pm25 = air.components.pm2_5;
-            const calculatedAQI = calculateUS_AQI_PM25(pm25);
+            
+            const calculatedAQI = calculateUS_AQI(air.components);
             setUsAQI(calculatedAQI);
             setLoading(false);
           }
