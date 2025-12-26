@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import "./App.css";
 import AqiGauge from "./components/AqiGauge";
 import {calculateUS_AQI} from "./utils/aqi.js"
-
+import { Box, Typography, Grid, Paper } from "@mui/material";
 
 
 function App() {
@@ -99,7 +99,8 @@ function App() {
   };
 
   return (
-    <>
+  
+    <div className="app-container">
       <input
         type="text"
         value={cityName}
@@ -108,8 +109,8 @@ function App() {
       />
       <button onClick={() => searchData()}>Search</button>
       {loading && <p>Loading...</p>}
-      {doSuggest && (
-        <ul>
+      {/* {doSuggest && (
+        <ul className="suggestion-container">
           {geoCodeData.map((el, i) => (
             <li
               key={`${el.name}-${el.lat}-${el.lon}`}
@@ -121,9 +122,42 @@ function App() {
             </li>
           ))}
         </ul>
-      )}
-      {usAQI !== null && <AqiGauge value={usAQI} />}
-    </>
+      )} */}
+
+
+      {doSuggest && !loading && (
+  <ul className="suggestion-container">
+    {geoCodeData.length > 0 ? (
+      // Case A: Cities found - show the list
+      geoCodeData.map((el, i) => (
+        <li
+          key={`${el.name}-${el.lat}-${el.lon}`}
+          style={{ cursor: "pointer" }}
+          onClick={() => fetchAirData(i)}
+        >
+          {el.name}, {el.state ? `${el.state}, ` : ""}{el.country} 
+          <span style={{ opacity: 0.5, fontSize: '0.75rem', marginLeft: '8px' }}>
+            ({el.lat.toFixed(2)}, {el.lon.toFixed(2)})
+          </span>
+        </li>
+      ))
+    ) : (
+      // Case B: Array is empty - show "Not Found"
+      <li className="no-result">
+        <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>📍</div>
+        <Typography variant="body2" fontWeight="bold">
+          City not found
+        </Typography>
+        <Typography variant="caption" sx={{ opacity: 0.6 }}>
+          Please check the spelling or try a different location.
+        </Typography>
+      </li>
+    )}
+  </ul>
+)}
+      {usAQI !== null && <AqiGauge value={usAQI} components={airPollutionData.components} locationName={cityName} />}
+      </div>
+    
   );
 }
 
