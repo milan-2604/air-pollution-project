@@ -1,0 +1,248 @@
+:root {
+  --tick-offset: -125px;
+}
+
+.aqi-card {
+  width: 90%;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  transition: background 0.8s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-sizing: border-box;
+}
+
+/* Background Animation */
+.pulse-bg {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  z-index: 0;
+  animation: pulse 3s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.1; }
+  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.3; }
+  100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.1; }
+}
+
+/* Typography */
+.aqi-header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.location-name {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin: 0;
+  text-transform: capitalize;
+  letter-spacing: -1px;
+}
+
+.realtime-label {
+  font-size: 0.9rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0.5rem 0;
+  opacity: 0.9;
+}
+
+/* --- GAUGE SECTION CORRECTIONS --- */
+
+.gauge-container {
+  position: relative;
+  z-index: 1;
+  width: 300px;
+  height: 150px; /* Exact half of width */
+  margin: 1rem auto 0;
+  overflow: hidden; /* Hides the bottom half of the circle */
+}
+
+.gauge-track {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px; /* Slightly smaller than container to fit ticks */
+  height: 260px; /* Full circle height */
+  border-radius: 50%;
+  border: 20px solid rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  /* We don't rotate the track anymore, we just don't draw bottom borders */
+  /* Or simply rely on overflow:hidden of the parent to cut it off */
+}
+
+/* TICKS */
+.gauge-tick {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  height: 10px; /* Height of the tick mark itself */
+  transform-origin: bottom center; 
+  /* The rotation happens in inline styles in JSX */
+}
+
+.tick-label {
+  position: absolute;
+  top: -20px;
+  left: -15px;
+  width: 30px;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+/* NEEDLE */
+.gauge-needle {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 6px;
+  height: 130px; /* Length of needle */
+  border-radius: 4px 4px 0 0;
+  transform-origin: bottom center;
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 5;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.needle-tip {
+  position: absolute;
+  top: -8px; /* Extend slightly above needle */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  /* Border bottom color set in JSX */
+  border-bottom-width: 10px;
+  border-bottom-style: solid;
+}
+
+.gauge-pivot {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  z-index: 6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+
+
+/* Value Display */
+.aqi-value-display {
+  text-align: center;
+  margin-top: -1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.aqi-number {
+  font-size: 4rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.aqi-status-badge {
+  display: inline-block;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 0.25rem 1rem;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Pollutants */
+.pollutants-section {
+  margin-top: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.pollutants-title {
+  font-size: 0.75rem;
+  font-weight: bold;
+  opacity: 0.8;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid;
+  padding-bottom: 0.5rem;
+}
+
+.pollutants-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.pollutant-card {
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 0.75rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.pollutant-card:hover {
+  transform: translateY(-3px);
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.pollutant-label {
+  font-size: 0.7rem;
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+.pollutant-value {
+  font-size: 1.1rem;
+  font-weight: 900;
+  margin-top: 4px;
+}
+
+/* Responsiveness */
+@media (max-width: 600px) {
+  :root {
+    --tick-offset: -100px;
+  }
+  .aqi-card { padding: 1.5rem; }
+  .location-name { font-size: 1.75rem; }
+  .gauge-container {width: 240px;
+    height: 120px; }
+  .gauge-track { width: 210px;
+    height: 210px; }
+  .gauge-needle { height: 105px; }
+  .pollutants-grid { grid-template-columns: repeat(2, 1fr); }
+  .aqi-number { font-size: 3rem; }
+}
+
+@media (min-width: 900px) {
+  .pollutants-grid { grid-template-columns: repeat(6, 1fr); }
+}
